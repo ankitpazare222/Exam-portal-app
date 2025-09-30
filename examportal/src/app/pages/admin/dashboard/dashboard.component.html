@@ -1,0 +1,589 @@
+
+
+
+<div class="bootstrap-wrapper hero-section">
+  <div class="container-fulid">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="sidebar-container">
+          <div class="sidebar-title">MENU</div>
+
+          <div class="menu-item" (click)="getHome()">
+            <mat-icon>home</mat-icon>
+            <span>Home</span>
+          </div>
+
+          <div class="menu-item" (click)="getProfile()" routerLink="profile">
+            <mat-icon>account_circle</mat-icon>
+            <span>Profile</span>
+          </div>
+
+          <div (click)="getCategory()" class="menu-item">
+            <mat-icon>add_shopping_cart</mat-icon>
+            <span>Category</span>
+          </div>
+
+          <div (click)="getaddCategory()" class="menu-item">
+            <mat-icon>add_circle_outline</mat-icon>
+            <span>Add Category</span>
+          </div>
+
+          <div (click)="getallQuizzes()" class="menu-item">
+            <mat-icon>book</mat-icon>
+            <span>Quizzes</span>
+          </div>
+
+          <div (click)="getaddAllQuizzes()" class="menu-item">
+            <mat-icon>add</mat-icon>
+            <span>Add Quiz</span>
+          </div>
+          <div (click)="GEtallstudent()" class="menu-item">
+            <mat-icon>user</mat-icon>
+            <span>All Student</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div  class="col-md-10">
+        <div *ngIf="ShowSTD" class="student-container">
+          <h2>Student List</h2>
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>View Details</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of Allstudentlist; let i = index">
+                <td>{{ student.firstName }}</td>
+                <td>{{ student.lastName }}</td>
+                <td>{{ student.phone }}</td>
+                <td>{{ student.email }}</td>
+                
+                <!-- View Details Button -->
+                <td>
+                  <button (click)="viewStudent(student)" class="view-btn">View</button>
+                </td>
+        
+                <!-- Delete Button -->
+                <td>
+                  <button (click)="deleteStudent(student.id, i)" class="delete-btn">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal" *ngIf="selectedStudent">
+          <div class="modal-content">
+            <span class="close-btn" (click)="closeModal()">&times;</span>
+            <h2>Student Details</h2>
+            <hr />
+        
+            <!-- Two Column Layout -->
+            <div class="details-grid">
+              <!-- Left Column -->
+              <div class="details-column">
+                <p><strong>First Name:</strong> {{ selectedStudent.firstName }}</p>
+                <p><strong>Last Name:</strong> {{ selectedStudent.lastName }}</p>
+                <p><strong>Email:</strong> {{ selectedStudent.email }}</p>
+                <p><strong>Phone:</strong> {{ selectedStudent.phone }}</p>
+                <p><strong>Gender:</strong> {{ selectedStudent.gender }}</p>
+                <p><strong>Graduation Year:</strong> {{ selectedStudent.graduation_Year }}</p>
+              </div>
+        
+              <!-- Right Column -->
+              <div class="details-column">
+                <p><strong>Higher Education:</strong> {{ selectedStudent.higher_Education }}</p>
+                <p><strong>Job:</strong> {{ selectedStudent.job }}</p>
+                <p><strong>LinkedIn:</strong> {{ selectedStudent.linkedIn }}</p>
+                <p><strong>Percentage:</strong> {{ selectedStudent.percentage }}%</p>
+                <p><strong>Primary Skill:</strong> {{ selectedStudent.primary_Skill }}</p>
+                <p><strong>Specialization:</strong> {{ selectedStudent.specialization }}</p>
+                <p><strong>Training Status:</strong> {{ selectedStudent.training_Status }}</p>
+                <p><strong>University:</strong> {{ selectedStudent.university }}</p>
+                <p><strong>Key Skills:</strong> {{ selectedStudent.enter_Key_Skills }}</p>
+              </div>
+            </div>
+        
+            <!-- Resume Download Button -->
+            <div class="button-container">
+              <button class="download-btn" (click)="downloadResume(selectedStudent.id)">
+                Download Resume
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+
+        <!-- update question -->
+        <div *ngIf="showUpdateQuestionForm">
+          <mat-card class="question-form-card">
+            <h2 class="form-title">
+              Update Question
+            </h2>
+            
+            <form (ngSubmit)="updateeQuestions()">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Enter the detail of the new question</mat-label>
+                <textarea [(ngModel)]="QueByID.content" name="content" matInput placeholder="Write question content"
+                  rows="3"></textarea>
+              </mat-form-field>
+
+              <div class="option-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option1</mat-label>
+                  <input [(ngModel)]="QueByID.option1" name="option1" matInput>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option2</mat-label>
+                  <input [(ngModel)]="QueByID.option2" name="option2" matInput>
+                </mat-form-field>
+              </div>
+
+              <div class="option-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option3</mat-label>
+                  <input [(ngModel)]="QueByID.option3" name="option3" matInput>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option4</mat-label>
+                  <input [(ngModel)]="QueByID.option4" name="option4" matInput>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Select Answer</mat-label>
+                <mat-select [(ngModel)]="QueByID.answer" name="answer">
+                  <mat-option [value]="QueByID.option1"
+                    *ngIf="QueByID.option1">{{QueByID.option1}}</mat-option>
+                  <mat-option [value]="QueByID.option2"
+                    *ngIf="QueByID.option2">{{QueByID.option2}}</mat-option>
+                  <mat-option [value]="QueByID.option3"
+                    *ngIf="QueByID.option3">{{QueByID.option3}}</mat-option>
+                  <mat-option [value]="QueByID.option4"
+                    *ngIf="QueByID.option4">{{QueByID.option4}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div class="submit-btn">
+                <button mat-raised-button type="submit" color="accent">Update Question</button>
+              </div>
+            </form>
+          </mat-card>
+        </div>
+
+        <!-- add question start hera -->
+        <div *ngIf="showQuestionForm">
+          <mat-card class="question-form-card">
+            <h2 class="form-title">
+              Add Question to <strong>{{ questionTitle }}</strong>
+            </h2>
+            
+            <form (ngSubmit)="addQuestions()">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Enter the detail of the new question</mat-label>
+                <textarea [(ngModel)]="AddQuestion.content" name="content" matInput placeholder="Write question content"
+                  rows="3"></textarea>
+                  
+              </mat-form-field>
+
+              <div class="option-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option1</mat-label>
+                  <input [(ngModel)]="AddQuestion.option1" name="option1" matInput>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option2</mat-label>
+                  <input [(ngModel)]="AddQuestion.option2" name="option2" matInput>
+                </mat-form-field>
+              </div>
+
+              <div class="option-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option3</mat-label>
+                  <input [(ngModel)]="AddQuestion.option3" name="option3" matInput>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Enter Option4</mat-label>
+                  <input [(ngModel)]="AddQuestion.option4" name="option4" matInput>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Select Answer</mat-label>
+                <mat-select [(ngModel)]="AddQuestion.answer" name="answer">
+                  <mat-option [value]="AddQuestion.option1"
+                    *ngIf="AddQuestion.option1">{{AddQuestion.option1}}</mat-option>
+                  <mat-option [value]="AddQuestion.option2"
+                    *ngIf="AddQuestion.option2">{{AddQuestion.option2}}</mat-option>
+                  <mat-option [value]="AddQuestion.option3"
+                    *ngIf="AddQuestion.option3">{{AddQuestion.option3}}</mat-option>
+                  <mat-option [value]="AddQuestion.option4"
+                    *ngIf="AddQuestion.option4">{{AddQuestion.option4}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <div class="submit-btn">
+                <button mat-raised-button type="submit" color="accent">Add</button>
+              </div>
+            </form>
+          </mat-card>
+        </div>
+
+        <!-- Questions start hear -->
+        <div *ngIf="GetQuestionByID">
+          <div class="question-header">
+            <h1>Questions of {{questionTitle}}</h1>
+            <button class="add-question-btn" (click)="queID(questionID)">
+              ➕ Add Question
+            </button>
+          </div>
+        
+          <div class="bootstrap-wrapper">
+            <div class="row">
+              <div class="col-md-12" style="    overflow: auto;
+              max-height: 600px;">
+                <mat-card  *ngFor="let q of questionsss; let i=index" class="mt20 extra">
+                  <mat-card-content>
+                    <p>
+                      <b>Q{{ i + 1 }}:</b>
+                      <span class="ml20" [innerHTML]="q.content"></span>
+                    </p>
+        
+                    <div class="container-fluid mt-3">
+                      <div class="row">
+                        <div class="col-md-6 option-box">
+                          <b>1]</b> {{q.option1}}
+                        </div>
+                        <div class="col-md-6 option-box">
+                          <b>2]</b> {{q.option2}}
+                        </div>
+                        <div class="col-md-6 option-box">
+                          <b>3]</b> {{q.option3}}
+                        </div>
+                        <div class="col-md-6 option-box">
+                          <b>4]</b> {{q.option4}}
+                        </div>
+                      </div>
+                    </div>
+        
+                    <div class="correct-answer">
+                      ✅ Correct Answer: {{q.answer}}
+                    </div>
+                    <div class="action-buttons mt-3">
+                      <button mat-raised-button color="primary" (click)="updateQuestion(q.quesId,i)">
+                        ✏️ Update
+                      </button>
+                      <button mat-raised-button color="warn" (click)="deleteQuestion(q.quesId, i)">
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- update Quizes -->
+        <div *ngIf="showUpdate">
+          <mat-card>
+            <div class="container">
+              <form (ngSubmit)="UpdateQuizessss()" class="modern-form">
+                <div class="form-header">
+                  <h2>New Quiz</h2>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Title</mat-label>
+                    <input matInput [(ngModel)]="quizesdata.title" name="title">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Category</mat-label>
+                    <mat-select [(ngModel)]="quizesdata.category.cid" name="category">
+                      <mat-option *ngFor="let c of getcategory" [value]="c.cid">{{ c.title }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max Marks</mat-label>
+                    <input [(ngModel)]="quizesdata.maxMarks" matInput type="number" name="maxMarks">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>No. of Questions</mat-label>
+                    <input [(ngModel)]="quizesdata.numberofQue" matInput type="number" name="numberofQue">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea [(ngModel)]="quizesdata.description" matInput rows="4" name="description"></textarea>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row toggle-row">
+                  <mat-slide-toggle [(ngModel)]="quizesdata.active" color="primary" name="active">
+                    Publish
+                  </mat-slide-toggle>
+                </div>
+
+                <div class="form-footer">
+                  <button mat-raised-button type="submit" color="primary">Update Quiz</button>
+                  <button mat-button color="warn" (click)="getallQuizzes()" type="button">Cancel</button>
+                </div>
+              </form>
+
+            </div>
+          </mat-card>
+        </div>
+        <!-- show add quizes -->
+        <div *ngIf="ShowaddQuizes">
+          <mat-card>
+            <div class="container">
+              <form (ngSubmit)="AddQuizes()" class="modern-form">
+                <div class="form-header">
+                  <h2> Update Quiz</h2>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Title</mat-label>
+                    <input matInput [(ngModel)]="CategoryData.title" name="title">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Category</mat-label>
+                    <mat-select [(ngModel)]="CategoryData.category.cid" name="category">
+                      <mat-option *ngFor="let c of getcategory" [value]="c.cid">{{ c.title }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max Marks</mat-label>
+                    <input [(ngModel)]="CategoryData.maxMarks" matInput type="number" name="maxMarks">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>No. of Questions</mat-label>
+                    <input [(ngModel)]="CategoryData.numberofQue" matInput type="number" name="numberofQue">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea [(ngModel)]="CategoryData.description" matInput rows="4" name="description"></textarea>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row toggle-row">
+                  <mat-slide-toggle [(ngModel)]="CategoryData.active" color="primary" name="active">
+                    Publish
+                  </mat-slide-toggle>
+                </div>
+
+                <div class="form-footer">
+                  <button mat-raised-button type="submit" color="primary">Save Quiz</button>
+                  <button mat-button color="warn" type="button">Cancel</button>
+                </div>
+              </form>
+
+            </div>
+          </mat-card>
+        </div>
+
+        <!-- show quizzes start hear -->
+        <div *ngIf="showAllquizes">
+          <div style="max-height: 517px; overflow-y: auto; padding: 10px;">
+            <mat-card class="mt-3 mx-4" *ngFor="let q of quizessss" style="margin-bottom: 20px;">
+              <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>{{ q?.title }}</mat-card-title>
+                <mat-card-subtitle>{{ q?.category?.title }}</mat-card-subtitle>
+              </mat-card-header>
+
+              <mat-card-content class="truncate">
+                <p>{{ q?.description }}</p>
+              </mat-card-content>
+
+              <mat-card-actions class="d-flex flex-wrap gap-2 mt-2">
+                <button (click)="QuestionByiD(q.qID)" mat-flat-button color="primary">Questions</button>
+
+                <button mat-stroked-button color="accent">
+                  Max Marks: {{ q?.maxMarks }}
+                </button>
+
+                <button mat-stroked-button color="accent">
+                  Questions: {{ q?.numberofQue }}
+                </button>
+
+                <button (click)="getQuizesById(q.qID)" mat-flat-button color="warn">
+                  Update
+                </button>
+
+                <button mat-flat-button color="primary">
+                  Attempts
+                </button>
+                <button (click)="deleteQuize(q.qID)" mat-flat-button style="background-color: #ad0000;
+                                color: #ffffff;">
+                  Delete Quiz
+                </button>
+              </mat-card-actions>
+            </mat-card>
+
+
+          </div>
+          <div class="text-center mt-4">
+            <button (click)="getaddAllQuizzes()" mat-raised-button color="primary">Add New Quiz</button>
+          </div>
+        </div>
+
+
+
+
+
+        <!-- ADD category start hear -->
+
+
+        <div *ngIf="showaddcategory" class="category-container">
+          <div class="category-card">
+            <h1 class="text-center">Add New Category</h1>
+
+            <form (ngSubmit)="saveCategory()">
+              <label for="title">Title</label>
+              <input required="" type="text" id="title" name="title" [(ngModel)]="titlecategory.title"
+                placeholder="Enter title here" class="form-control" required />
+
+              <label for="description">Description</label>
+              <textarea required id="description" name="description" [(ngModel)]="titlecategory.description"
+                placeholder="Enter description here" maxlength="250" class="form-control textarea" rows="5"></textarea>
+              <div class="char-count">Characters: {{titlecategory.description.length }}/250</div>
+
+              <div class="text-center">
+                <button type="submit" class="submit-btn">Save / Add</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Category start form hear -->
+
+        <div *ngIf="showcategory" class="category-wrapper">
+          <mat-card class="category-card">
+            <div class="list-header mb-3">📂 All Categories</div>
+        
+            <mat-list>
+              <mat-list-item *ngFor="let c of getcategory" class="category-item">
+                <mat-icon mat-list-icon color="primary">category</mat-icon>
+                
+                <div mat-line class="title">{{ c.title }}</div>
+                <div mat-line class="description">{{ c.description }}</div>
+        
+                <button mat-icon-button color="warn" (click)="deleteCategory(c.cid)" matTooltip="Delete Category">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+        
+            <div class="text-center mt-4">
+              <button mat-raised-button color="primary" (click)="addnewcategory()">
+                ➕ Add New Category
+              </button>
+            </div>
+          </mat-card>
+        </div>
+        
+
+
+
+        <!-- admin panel or home -->
+        <div *ngIf="home" class="admin-home-container">
+          <div class="welcome-card">
+            <h1>👋 Welcome, Admin!</h1>
+            <p class="subtitle">
+              You have the power to manage, control and shape the future of your platform.
+            </p>
+            <blockquote>
+              <em>“Great leaders don’t set out to be a leader... they set out to make a difference.”</em>
+            </blockquote>
+
+            <div class="action-buttons">
+              <button class="btn btn-primary">Manage Users</button>
+              <button class="btn btn-pink">Create Quiz</button>
+              <button class="btn btn-red">View Reports</button>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- you profilr details -->
+
+
+        <!-- <div *ngIf="profile">
+                <h1>Your profile details</h1>
+               </div> -->
+               <div *ngIf="profile" class="profile-container">
+                <mat-card class="profile-card">
+                  <h1 class="card-title">Your Profile Details</h1>
+                  <mat-card-content>
+              
+                    <div class="text-center">
+                      <!-- Profile image -->
+                      <img class="profile-img" src="../../../../assets/Screenshot 2025-07-12 184232.png" alt="Profile Image">
+                      <h2 class="user-name">ANKIT PAZARE</h2>
+                    </div>
+              
+                    <div class="row justify-content-center mt-4">
+                      <div class="col-md-10">
+                        <div class="user-card p-3">
+                          <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>USERNAME:</strong> {{ user?.username }}</li>
+                            <li class="list-group-item"><strong>USER ID:</strong> {{ user?.id }}</li>
+                            <li *ngIf="user.phone" class="list-group-item"><strong>PHONE:</strong> {{ user?.phone }}</li>
+                            <li class="list-group-item"><strong>EMAIL / ROLE:</strong> {{ user?.email }}</li>
+                            <li class="list-group-item">
+                              <strong>STATUS:</strong> 
+                              <span [ngClass]="user?.enabled ? 'text-success' : 'text-danger'">
+                                {{ user?.enabled ? 'ACTIVE' : 'NOT ACTIVE' }}
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+              
+                    <mat-card-actions class="text-center mt-4">
+                      <button mat-raised-button color="primary" class="me-2">UPDATE</button>
+                      <button mat-raised-button color="accent">SHARE</button>
+                    </mat-card-actions>
+              
+                  </mat-card-content>
+                </mat-card>
+              </div>
+
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

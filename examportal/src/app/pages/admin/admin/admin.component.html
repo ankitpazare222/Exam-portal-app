@@ -1,0 +1,101 @@
+<p>admin works!</p>
+
+<br>
+{{user | json}}
+
+<div class="bootstrap-wrapper">
+    <div class="container-fulid">
+        <div class="row">
+            <div class="col-md-2">
+
+                <button matButton [matMenuTriggerFor]="menu">Menu</button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="getHome()"><mat-icon mat-list-icon>home</mat-icon>home</button>
+                    <button mat-menu-item routerLink="profile" (click)="getProfile()"><mat-icon
+                            mat-list-icon>account_circle</mat-icon>profile</button>
+                </mat-menu>
+                <button matButton [matMenuTriggerFor]="menu">Menu</button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>Item 1</button>
+                    <button mat-menu-item>Item 2</button>
+                </mat-menu>
+                <div>MENU
+                    <button (click)="getHome()"><mat-icon mat-list-icon>home</mat-icon>home</button>
+                    <button (click)="getProfile()"><mat-icon mat-list-icon>account_circle</mat-icon>home</button>
+                </div>
+            </div>
+
+            <div class="col-md-10">
+                <!-- admin panel or home -->
+                <div *ngIf="home">
+                    <h1>Welcome to admin panel</h1>
+                </div>
+
+                <!-- you profilr details -->
+
+
+                <!-- <div *ngIf="profile">
+                <h1>Your profile details</h1>
+               </div> -->
+                <div>
+                    <!-- <h1>Your profile details</h1> -->
+                    <mat-card>
+                        <h1>Your Profile Details</h1>
+                        <mat-card-content>
+
+                            <div class="bootstrap-wrapper">
+                                <div class="container">
+                                    <div class="container text-center ">
+                                        <!-- Profile image -->
+                                        <img class="porfile-img"
+                                            src="https://wallpapers-clan.com/wp-content/uploads/2022/08/default-pfp-18.jpg"
+                                            alt="Profile Image">
+                                        <br><br>
+                                        <H1>   </H1>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <!-- Additional content goes here -->
+                                            <table  class="text-center table">
+                                                <tr>
+                                                    <td>Username</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>UereId</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>phone</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>email or Role</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>status</td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <mat-card-actions class="text-centerr">
+                                        <button matButton>UPDATE</button>
+                                        <button matButton>SHARE</button>
+                                    </mat-card-actions>
+
+                                </div>
+                            </div>
+
+                        </mat-card-content>
+                    </mat-card>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

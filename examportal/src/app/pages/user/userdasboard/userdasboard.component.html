@@ -1,0 +1,480 @@
+<div *ngIf="Quizeresult" class="result-container">
+  <mat-card class="result-card">
+    <mat-card-header>
+      <mat-card-title>Quiz Result</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p><strong>Marks Got:</strong> {{ marksGot| number:'1.2-2' }}</p>
+      <p><strong>Correct Answers:</strong> {{ correctAnswer }}</p>
+      <p><strong>Questions Attempted:</strong> {{ attemted}}</p>
+    </mat-card-content>
+
+    <mat-card-actions class="btn-wrapper">
+      <button mat-raised-button color="primary" (click)="printPage()">Print</button>
+      <button style="margin: 20px;" mat-raised-button color="primary" (click)="backtohome()">home</button>
+      <button style="margin: 20px;" mat-raised-button color="primary" (click)="viewresult()">View Result</button>
+      <button mat-raised-button color="primary" (click)="exportQuizResultToPDF()">
+        Download PDF
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+<div class="result-review-container" *ngIf="showResult">
+  <h2 class="review-title">📄 Exam Review</h2>
+
+  <div *ngFor="let q of questionsss; let i = index" class="review-card">
+    <h4 class="question-text">Q{{ i + 1 }}: {{ q.content }}</h4>
+
+    <div class="options-list">
+      <div class="option" [ngClass]="{
+            'correct': q.option1 === q.answer,
+            'wrong': q.option1 === q.givenanswer && q.option1 !== q.answer
+          }">
+        A] {{ q.option1 }}
+      </div>
+      <div class="option" [ngClass]="{
+            'correct': q.option2 === q.answer,
+            'wrong': q.option2 === q.givenanswer && q.option2 !== q.answer
+          }">
+        B] {{ q.option2 }}
+      </div>
+      <div class="option" [ngClass]="{
+            'correct': q.option3 === q.answer,
+            'wrong': q.option3 === q.givenanswer && q.option3 !== q.answer
+          }">
+        C] {{ q.option3 }}
+      </div>
+      <div class="option" [ngClass]="{
+            'correct': q.option4 === q.answer,
+            'wrong': q.option4 === q.givenanswer && q.option4 !== q.answer
+          }">
+        D] {{ q.option4 }}
+      </div>
+    </div>
+
+    <div class="answer-info">
+      <p><span class="label">✅ Correct Answer:</span> {{ q.answer }}</p>
+      <p><span class="label">🟡 Your Answer:</span> {{ q.givenanswer || 'Not Attempted' }}</p>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- start quize hear -->
+<div *ngIf="startquizhear" class="container mt-5">
+  <h2 class="text-center mb-5 text-primary">📝 Take Your Quiz</h2>
+
+  <div *ngFor="let q of questionsss; let i = index" class="card mb-4 shadow-lg border-0">
+    <div class="card-body p-4" style="background-color: #f8f9fa;">
+      <!-- Question Number and Text -->
+      <h5 class="mb-3">
+        <strong>Q{{ i + 1 }}.</strong> <span [innerHTML]="q.content"></span>
+      </h5>
+      <hr />
+
+      <!-- Options Grid -->
+      <div class="row">
+        <div class="col-md-6 mb-3" *ngFor="let opt of [q.option1, q.option2, q.option3, q.option4]">
+          <label class="d-block p-3 rounded shadow-sm option-hover" [class.option-selected]="q.givenanswer === opt">
+            <input type="radio" class="me-2" [(ngModel)]="q.givenanswer" name="question{{ i }}" [value]="opt" />
+            {{ opt }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="text-center mt-5">
+    <button class="btn btn-lg btn-primary px-5 py-2" (click)="submitQuize()">
+      ✅ Submit Quiz
+    </button>
+  </div>
+</div>
+
+
+<div *ngIf="mainAllDiv" class="bootstrap-wrapper hero-section">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <div class="col-md-2 sidebar-container p-0">
+        <div class="sidebar-title">Admin Panel</div>
+
+        <!-- Quizzes Section -->
+        <div class="menu-item">
+          <mat-icon>quiz</mat-icon>
+          <span (click)="getallQuizzes()">All Quizzes</span>
+        </div>
+        <div class="menu-item" *ngFor="let c of getcategory">
+          <mat-icon>quiz</mat-icon>
+          <span (click)="getQuizeById(c.cid)">{{c.title}}</span>
+        </div>
+
+        <!-- My Profile Section -->
+        <mat-accordion class="profile-section">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>account_circle</mat-icon>
+                My Profile
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+
+
+            <div class="submenu-item" (click)="showPersonalDetails()">
+              <mat-icon>person</mat-icon>
+              <span>Personal Details</span>
+            </div>
+
+            <div class="submenu-item" (click)="showEducationDetails()">
+              <mat-icon>school</mat-icon>
+              <span>Education Details</span>
+            </div>
+
+            <div class="submenu-item" (click)="showPlacementDetails()">
+              <mat-icon>work</mat-icon>
+              <span>Placement Details</span>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+
+
+      <!-- Content -->
+      <div class="col-md-10 content-container">
+        <!-- placement details -->
+        <div class="form-container" *ngIf="placement">
+          <h2>Job Details</h2>
+          <form enctype="multipart/form-data">
+        
+            <div class="form-grid">
+        
+              <!-- Left Side -->
+              <div class="form-group">
+                <label>Are You Looking For Job?</label>
+                <select [(ngModel)]="userDetails.job" name="job" class="form-select">
+                  <option selected disabled>-Select-</option>
+                  <option value="Yes">YES</option>
+                  <option value="No">NO</option>
+                </select>
+              </div>
+        
+              <div class="form-group">
+                <label>Job Trials As?</label>
+                <select [(ngModel)]="userDetails.Trials" name="jobTrials">
+                  <option value="">-- Select --</option>
+                  <option value="Fresher">Fresher</option>
+                  <option value="Experienced">Experienced</option>
+                </select>
+              </div>
+        
+              <div class="form-group">
+                <label>Primary Skill</label>
+                <select [(ngModel)]="userDetails.primary_Skill" name="primary_Skill" class="form-select">
+                  <option value="" selected>-Select-</option>
+                  <option value="java_fullstack">Java Fullstack</option>
+                  <option value="python_fullstack">Python Fullstack</option>
+                  <option value="ui_fullstack">UI Fullstack</option>
+                  <option value="react_js">React JS</option>
+                  <option value="angular">Angular</option>
+                  <option value="devops_engineer">DevOps Engineer</option>
+                  <option value="cloud_engineer">Cloud Engineer</option>
+                  <option value="software_testing">Software Testing</option>
+                  <option value="data_science">Data Science</option>
+                  <option value="data_analytics">Data Analytics</option>
+                  <option value="power_bi">Power BI</option>
+                  <option value="mulesoft">Mulesoft</option>
+                </select>
+              </div>
+        
+              <!-- Right Side -->
+              <div class="form-group">
+                <label>Enter Key Skills</label>
+                <input [(ngModel)]="userDetails.enter_Key_Skills" name="enter_Key_Skills" type="text" placeholder="E.g. Core Java, Angular">
+              </div>
+        
+              <div class="form-group">
+                <label>Training Status</label>
+                <select [(ngModel)]="userDetails.training_Status" name="training_Status">
+                  <option value="">-- Select --</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Not Started">Not Started</option>
+                </select>
+              </div>
+        
+              <div class="form-group">
+                <label>LinkedIn Profile URL</label>
+                <input [(ngModel)]="userDetails.linkedIn" name="linkedIn" type="url" placeholder="https://linkedin.com/in/username">
+              </div>
+        
+              <!-- Resume Upload -->
+              <div class="form-group">
+                <label>Upload Resume</label>
+                <input type="file" (change)="onResumeSelected($event)" accept=".pdf,.doc,.docx">
+              </div>
+              <div class="form-footer">
+                <button type="button" (click)="uploadResume()" class="submit-btn">Upload Resume</button>
+              </div>
+              <button (click)=" downloadResume()">Download</button>
+        
+            </div>
+        
+            <div class="form-footer">
+              <button type="submit" (click)="updateEducationdetails()" class="submit-btn">Save Data</button>
+            </div>
+          </form>
+        </div>
+        
+
+        <!-- education details -->
+
+        <div class="form-container" *ngIf="education">
+          <h2>Education Details</h2>
+          <form (ngSubmit)="updateEducationdetails()">
+            <!-- Education Type -->
+            <div class="form-group">
+              <label for="educationType">Education Type *</label>
+              <select [(ngModel)]="userDetails.higher_Education"  id="educationType" name="higher_Education" required>
+                <option value="">-- Select Education Type --</option>
+                <option value="higher">Higher Education</option>
+                <option value="graduation">Graduation</option>
+                <option value="postgraduation">Post Graduation</option>
+                <option value="phd">Ph.D</option>
+              </select>
+            </div>
+
+            <!-- Specialization -->
+            <div class="form-group">
+              <label for="specialization">Specialization *</label>
+              <select  [(ngModel)]="userDetails.specialization" id="specialization" name="specialization" required>
+                <option value="">-- Select Specialization --</option>
+                <optgroup label="Engineering">
+                  <option value="cse">Computer Science</option>
+                  <option value="it">Information Technology</option>
+                  <option value="mech">Mechanical</option>
+                  <option value="civil">Civil</option>
+                  <option value="ece">Electronics</option>
+                </optgroup>
+                <optgroup label="Commerce">
+                  <option value="bcom">B.Com</option>
+                  <option value="bba">BBA</option>
+                  <option value="mba">MBA</option>
+                </optgroup>
+                <optgroup label="Science">
+                  <option value="bsc">B.Sc</option>
+                  <option value="msc">M.Sc</option>
+                  <option value="pharma">Pharmacy</option>
+                </optgroup>
+                <optgroup label="Arts">
+                  <option value="ba">B.A</option>
+                  <option value="ma">M.A</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- Year & Percentage -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="year">Passing Year *</label>
+                <select [(ngModel)]="userDetails.graduation_Year" id="year" name="graduation_Year" required>
+                  <option value="" disabled selected>-- Passing Year --</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2018">2018</option>
+                  <option value="2017">2017</option>
+                  <option value="2016">2016</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="percentage">Percentage *</label>
+                <input [(ngModel)]="userDetails.percentage" type="number" id="percentage" name="percentage" placeholder="Enter %" required>
+              </div>
+            </div>
+
+            <!-- University -->
+            <div class="form-group">
+              <label for="university">University / College *</label>
+              <input [(ngModel)]="userDetails.university" type="text" id="university" name="university" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Education</button>
+          </form>
+        </div>
+        <!-- personal details -->
+        <div class="form-container" *ngIf="personal">
+          <h2>User Registration</h2>
+          <form (ngSubmit)="updateEducationdetails()">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input [(ngModel)]="userDetails.firstName" type="text" id="firstName" name="firstName" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input [(ngModel)]="userDetails.lastName" type="text" id="lastName" name="lastName" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input [(ngModel)]="userDetails.email" type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="mobile">Mobile Number *</label>
+                <input [(ngModel)]="userDetails.phone" type="text" id="mobile" name="phone" required>
+              </div>
+              <div class="form-group">
+                <label for="aadhaar">Aadhaar Number *</label>
+                <input [(ngModel)]="userDetails.aadhar_no" type="text" id="aadhaar" name="aadhar_no" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="gender">Gender *</label>
+              <select [(ngModel)]="userDetails.gender" id="gender" name="gender" required>
+                <option value="">-- Select Gender --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Data</button>
+          </form>
+        </div>
+
+
+
+        <!-- instruction start hear -->
+        <div *ngIf="instruction" class="instruction-container">
+          <mat-card class="instruction-card">
+            <mat-card-header>
+              <mat-card-title>
+                📝 Read the instructions of this page carefully
+              </mat-card-title>
+              <mat-card-subtitle>
+                One step more to go!
+              </mat-card-subtitle>
+            </mat-card-header>
+
+
+            <mat-card-content>
+              <h2 class="section-title">Important Instructions</h2>
+              <ul class="instruction-list">
+                <li>This quiz is only for <strong>practice purpose</strong>.</li>
+                <li>
+                  You have to submit the quiz within
+                  <strong>{{ quizesdata.numberofQue * 2 }}</strong> minutes.
+                </li>
+                <li>
+                  You can attempt the quiz any number of times.
+                </li>
+                <li>
+                  This quiz contains <strong>{{ quizesdata.numberofQue }}</strong> questions.
+                </li>
+                <li>
+                  Each question carries
+                  <strong>{{ quizesdata.maxMarks / quizesdata.numberofQue | number:'1.2-2' }}</strong>
+                  marks.
+                </li>
+              </ul>
+
+              <h2 class="section-title">Attempting Quiz</h2>
+              <ul class="instruction-list">
+                <li>
+                  Click <strong>Start Quiz</strong> button to begin the test.
+                </li>
+                <li>
+                  Timer will start the moment you click the Start button.
+                </li>
+                <li>
+                  You cannot resume the quiz if it is interrupted.
+                </li>
+                <li>
+                  Scroll down to move to the next question.
+                </li>
+                <li>
+                  Click the <strong>Submit Quiz</strong> button to complete the test.
+                </li>
+                <li>
+                  PDF report of the test will be generated automatically.
+                </li>
+              </ul>
+            </mat-card-content>
+
+            <mat-card-actions class="center-button">
+              <button mat-raised-button color="primary" (click)="startQuizsFortest(qID)">
+                🚀 Start Quiz
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+
+        <!-- all quizes Load hear -->
+        <div *ngIf="ShowQuizes" class="bootstrap-wrapper">
+          <div class="container-fluid">
+            <h1 class="quiz-heading">📚 Available Quizzes</h1>
+
+            <div class="row mt20">
+              <div style="margin-bottom: 20px;" class="col-md-4" *ngFor="let q of quizessss">
+                <mat-card class="quiz-card mb20">
+                  <mat-card-header>
+                    <div mat-card-avatar class="quiz-avatar"></div>
+                    <mat-card-title>{{ q.title }}</mat-card-title>
+                    <mat-card-subtitle>{{ q.category.title }}</mat-card-subtitle>
+                  </mat-card-header>
+
+                  <mat-card-content>
+                    <p class="truncate">
+                      {{ q.description }}
+                    </p>
+                    <div class="quiz-info">
+                      <p><strong>Max Marks:</strong> {{ q.maxMarks }}</p>
+                      <p><strong>Questions:</strong> {{ q.numberofQue }}</p>
+                    </div>
+                  </mat-card-content>
+                  <mat-card-actions class="card-buttons">
+                    <button mat-stroked-button color="primary" (click)="viewQuiz(q.qid)">
+                      👁 View
+                    </button>
+                    <button mat-flat-button color="accent" (click)="startQuiz(q.qID)">
+                      🚀 Start
+                    </button>
+                  </mat-card-actions>
+                </mat-card>
+              </div>
+            </div>
+            <div class="col-md-12" *ngIf="quizessss && quizessss.length === 0">
+              <mat-card>
+                <mat-card-content>
+                  <h1 style="color: #0f0c0c; text-align: center;">📭 No data in this category</h1>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- home page -->
+        <!-- <div>
+                    <h1>Welcome to the User Dashboard</h1>
+                    <p>Manage categories, quizzes, users and more from the menu.</p>
+                </div> -->
+      </div>
+    </div>
+  </div>
+</div>
