@@ -1,0 +1,11 @@
+2025-08-15 14:14:47,540 [Worker-2: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is not available. Remote download required.
+2025-08-15 14:17:36,354 [Worker-7: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.Ankit.collection:collectionCURDrepo:0.0.1-SNAPSHOT @ C:\Users\asus\OneDrive\Documents\ExamPortal\pom.xml.
+2025-08-15 14:17:38,255 [Worker-7: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /collectionCURDrepo/src/main/java
+2025-08-15 14:17:38,258 [Worker-7: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /collectionCURDrepo/src/main/resources
+2025-08-15 14:17:38,260 [Worker-7: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /collectionCURDrepo/src/main/resources
+2025-08-15 14:17:38,261 [Worker-7: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /collectionCURDrepo/src/test/java
+2025-08-15 14:17:38,262 [Worker-7: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /collectionCURDrepo/src/test/resources
+2025-08-15 14:17:38,756 [Worker-7: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 3 sec
+2025-08-15 14:17:41,209 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-08-15 14:17:41,231 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-08-15 14:17:41,249 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\asus\OneDrive\Documents\ExamPortal\src\test\resources
